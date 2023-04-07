@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+
+    <head>
+      <title></title>
+      <script type="text/javascript" src="sudoku.js"></script>
+      <script type="text/javascript" src="analytics.js"></script>
+      <style type="text/css">
+    
+        body { font-family: Calibri, sans-serif; }
+        #container { text-align: center }
+        table { border-collapse: collapse; font-size: 2em; margin: 0 auto; }
+        colgroup, tbody { border: solid medium; }
+        td { border: solid thin; height: 1.4em; width: 1.4em; text-align: center; padding: 0; }
+        button { margin-top: 15px; font-size: 1.5em; }
+        
+        padd{padding-bottom: 100px;}
+        
+      </style>
+    </head>
+    <body>
+      
+        
+      <div id="container">
+        <img src="gfg.png" style = "height:100px ; width: 400px; align:left" >
+    
+        <h1 class = "padd">Sudoku Solver</h1>
+    
+        <table id="sudoku-board">
+          
+          
+          <colgroup><col><col><col>
+          <colgroup><col><col><col>
+          <colgroup><col><col><col>
+          <tbody>
+           <tr> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td>
+           <tr> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td>     
+           <tr> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td>
+          <tbody>
+           <tr> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td>
+           <tr> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td>     
+           <tr> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td>
+          <tbody>
+           <tr> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td>
+           <tr> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td>     
+           <tr> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td> <td contenteditable="true"></td>
+        </table>
+        <div>
+          <button id="solve-button">Solve!</button>
+        </div>
+        <div>
+          <button id="clear-button">Clear board</button>
+        </div>
+      </div>
+    </body>
+    
+    <script type="text/javascript">
+      document.getElementById("sudoku-board").addEventListener("keyup", function(event) {
+        if(event.target && event.target.nodeName == "TD") {
+          /*This line of code declares a regular expression pattern, which is used to match valid number inputs. 
+          In this case, the regular expression /[1-9]/ matches any digit between 1 and 9 (inclusive). 
+          This is used in the code block to test if the user input is a valid number between 1 and 9.
+          */
+          var validNum = /[1-9]/;  //for valid number 1 to 9
+          var tdEl = event.target;
+          
+          if (tdEl.innerText.length > 0 && validNum.test(tdEl.innerText[0])) {
+            tdEl.innerText = tdEl.innerText[0];
+          } 
+          else {
+            tdEl.innerText = "";
+          }
+          /*
+          This code block checks if the length of the inner text of the table cell element is greater than zero
+          (i.e., if the user has typed something) and if the first character of the inner text is a valid number
+          between 1 to 9. If both conditions are true, it sets the inner text to only the first character entered
+          by the user (to ensure only one digit is entered in each cell), else it sets the inner text to an empty 
+          string (to clear the cell if an invalid input is detected).
+          */
+        }
+      });
+    
+      document.getElementById("solve-button").addEventListener("click", function(event) {
+        var boardString = boardToString();
+        var solution = SudokuSolver.solve(boardString);//main solving function
+        if (solution) {
+          stringToBoard(solution);
+        } else {
+          alert("Invalid board!");
+        }
+      })
+    
+      document.getElementById("clear-button").addEventListener("click", clearBoard);
+    
+      function clearBoard() {
+        //will traverse all the table data and make them empty strings
+        var tds = document.getElementsByTagName("td");
+        for (var i = 0; i < tds.length; i++) {
+          tds[i].innerText = "";
+        }
+      }
+    
+      function boardToString() {
+        /*
+        This section of the code is iterating through all the td elements in the HTML document and checking 
+        whether the innerText property of each td element contains a valid number between 1 and 9. 
+        If the innerText property contains a valid number, it is added to the string variable, 
+        otherwise a dash ("-") is added to the string. Finally, the string variable is returned as the result of
+         the boardToString() function. This function is used to convert the contents of the Sudoku board into a 
+         string that can be used to represent the current state of the game.
+        */
+        var string = "";
+        var validNum = /[1-9]/;
+        var tds = document.getElementsByTagName("td");
+        for (var i = 0; i < tds.length; i++) {
+          if (validNum.test(tds[i].innerText[0])) {
+            string += tds[i].innerText;
+          } else {
+            string += "-";
+          }
+        }
+        return string;
+      }
+
+
+      //This function takes a string as input and populates the cells of a Sudoku board with the numbers 
+      //from the string.    
+      function stringToBoard(string) {
+        var currentCell;
+        var validNum = /[1-9]/;
+        var cells = string.split("");//split as per empty space bcz same is used while joining
+        var tds = document.getElementsByTagName("td");
+        for (var i = 0; i < tds.length; i++) {
+          currentCell = cells.shift();
+          //It assigns the first character from the cells array to the currentCell variable using the shift method,
+          // which removes the first element of the cells array and returns it.
+          //If currentCell matches the validNum regular expression (i.e., it is a valid number),
+          // it sets the innerText property of the current <td> element to currentCell.
+          if (validNum.test(currentCell)) {
+            tds[i].innerText = currentCell;
+          }
+        }
+      }
+      /*convert a string representation of a Sudoku board to an actual HTML table.
+      The string.split("") method is used to split the input string into an array of characters, 
+      with each character representing a cell value or a dash if the cell is empty.
+      The document.getElementsByTagName("td") method is used to get all the td elements of the HTML table.
+      The currentCell = cells.shift() line is used to remove the first element of the cells array and assign
+      it to the currentCell variable.
+      The validNum.test(currentCell) line checks if the currentCell is a valid number between 1 and 9.
+      If the currentCell is valid, then the tds[i].innerText is set to the currentCell value. 
+      This means that the value of each td element in the table is set to the corresponding value in
+      the input string.      
+      */
+    </script>
+    </html>
