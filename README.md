@@ -13,3 +13,10 @@ To play the game, click on an empty cell and select a number from the numbers pa
 
 To win the game, you must fill in all the cells with valid numbers, following the rules of the game.
 
+
+
+UI view of the game-
+
+
+
+![image](https://github.com/dshree-21/WebD_Sudoku_Solver/assets/90754321/b778d29c-6f01-49c0-abb0-803e001f88c1)
